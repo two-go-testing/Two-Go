@@ -10,7 +10,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
 
-import { session } from "../../src/session.js";
+import { session, Session } from "../../src/session.js";
 
 // Start a node:http server bound to an ephemeral port (0) and resolve with the
 // server plus its base URL once it is listening.
@@ -384,4 +384,7 @@ test("the same session reuses one client across requests", () => {
   assert.equal(b.session, s);
   assert.equal(a.builder.client, b.builder.client);
   assert.equal(a.builder.client, s.client);
+});
+test("Session class is exported and session() returns an instance", () => {
+  assert.ok(session("http://localhost") instanceof Session);
 });

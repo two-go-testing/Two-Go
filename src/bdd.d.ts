@@ -13,10 +13,10 @@ export interface ScenarioOptions {
   log?: (line: string) => void;
 }
 
-export declare function given(text: string, run: (world: World) => unknown | Promise<unknown>): Step;
-export declare function when(text: string, run: (world: World) => unknown | Promise<unknown>): Step;
-export declare function then(text: string, run: (world: World) => unknown | Promise<unknown>): Step;
-export declare function and(text: string, run: (world: World) => unknown | Promise<unknown>): Step;
+export declare function Given(text: string, run: (world: World) => unknown | Promise<unknown>): Step;
+export declare function When(text: string, run: (world: World) => unknown | Promise<unknown>): Step;
+export declare function Then(text: string, run: (world: World) => unknown | Promise<unknown>): Step;
+export declare function And(text: string, run: (world: World) => unknown | Promise<unknown>): Step;
 
 /** Turn a list of steps into an async function for your runner's test(). */
 export declare function scenario(steps: Step[], options?: ScenarioOptions): () => Promise<World>;

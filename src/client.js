@@ -3,6 +3,7 @@
 // together with a queue of assertions to run once the response arrives.
 
 import { GoResponse } from "./response.js";
+import { sleep } from "./utils/function.js";
 
 export class GoClient {
   constructor({ baseURL = "", headers = {}, timeout = 30000, cookies = false } = {}) {
@@ -139,10 +140,6 @@ export class GoClient {
 function ensureLeadingSlash(path) {
   if (path === "") return "";
   return path.startsWith("/") ? path : "/" + path;
-}
-
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // Send a builder with retry/backoff. Retries on a thrown error, or when the

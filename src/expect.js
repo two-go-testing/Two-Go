@@ -3,7 +3,7 @@
 // `.not` and async assertions via `.resolves` / `.rejects`.
 
 import { AssertionError, resolvePath } from "./assertions.js";
-import { isEqual } from "./utils/lang.js";
+import { isEqual, isEmpty } from "./utils/lang.js";
 
 // Human readable description of a value for error messages.
 function describe(value) {
@@ -28,18 +28,21 @@ function describe(value) {
   return String(value);
 }
 
-// Strict deep equality: like isEqual but also requires matching array-vs-object
-// shape and tags so {} !== [] and class instances are distinguished.
+// Strict deep equality: like isEqual but also requires identical prototypes at
+// every level (so {} !== [] and class instances are distinguished), equal array
+// lengths and sparseness, and no extra undefined-valued keys.
 function strictEqual(a, b) {
   if (Object.is(a, b)) return true;
   if (a === null || b === null) return false;
   if (typeof a !== "object" || typeof b !== "object") return false;
-
-  const aIsArray = Array.isArray(a);
-  const bIsArray = Array.isArray(b);
-  if (aIsArray !== bIsArray) return false;
-
   if (Object.getPrototypeOf(a) !== Object.getPrototypeOf(b)) return false;
+
+  // Value-like built-ins carry no own keys; compare them by content.
+  if (a instanceof Date || a instanceof RegExp || a instanceof Map || a instanceof Set) {
+    return isEqual(a, b);
+  }
+
+  if (Array.isArray(a) && a.length !== b.length) return false;
 
   const aKeys = Object.keys(a);
   const bKeys = Object.keys(b);
@@ -84,18 +87,6 @@ function typeOf(value) {
   if (value === null) return "null";
   if (Array.isArray(value)) return "array";
   return typeof value;
-}
-
-// True when a value is considered empty (null/undefined, "", [], {}, empty
-// Map/Set). Numbers and booleans are only empty when nil.
-function isEmptyValue(value) {
-  if (value === null || value === undefined) return true;
-  if (typeof value === "string" || Array.isArray(value)) {
-    return value.length === 0;
-  }
-  if (value instanceof Map || value instanceof Set) return value.size === 0;
-  if (typeof value === "object") return Object.keys(value).length === 0;
-  return false;
 }
 
 export class Expectation {
@@ -434,9 +425,9 @@ export class Expectation {
     });
   }
 
-  // Value must be empty (see isEmptyValue).
+  // Value must be empty (nil, "", [], {}, empty Map/Set; see utils isEmpty).
   toBeEmpty() {
-    return this.#assert(isEmptyValue(this.value), "to be empty", {
+    return this.#assert(isEmpty(this.value), "to be empty", {
       expected: "empty",
       actual: this.value
     });

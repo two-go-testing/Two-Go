@@ -7,15 +7,11 @@
 
 import { GoResponse } from "./response.js";
 import { RequestBuilder } from "./client.js";
-import { AssertionError, resolvePath, matches } from "./assertions.js";
+import { resolvePath, matches } from "./assertions.js";
+import { failResponse as fail, describeMatcher as describe } from "./internal.js";
 import { validate } from "./schema.js";
 import { expect } from "./expect.js";
 import { isArray, isString, isObject, isEmpty, isPlainObject } from "./utils/lang.js";
-
-// Throw an AssertionError using the standard `METHOD URL -> description` prefix.
-function fail(response, description, info) {
-  throw new AssertionError(`${response.method} ${response.url} -> ${description}`, info);
-}
 
 // Read a header by name using the lowercase-keyed headers map.
 function header(response, name) {
@@ -52,18 +48,6 @@ function parseCookie(raw) {
   }
 
   return { name, value, attributes };
-}
-
-// Human readable rendering of a matcher/value for error messages.
-function describe(value) {
-  if (value instanceof RegExp) return value.toString();
-  if (typeof value === "function") return value.name ? `predicate ${value.name}` : "predicate";
-  if (typeof value === "string") return JSON.stringify(value);
-  try {
-    return JSON.stringify(value);
-  } catch {
-    return String(value);
-  }
 }
 
 // Assert the status falls within an inclusive [min, max] range.

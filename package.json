@@ -1,6 +1,6 @@
 {
   "name": "two-go",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "description": "Zero-dependency fluent service/API testing library: chainable HTTP requests, Jest-style + HTTP assertions, and a lodash-inspired utility belt. Works standalone or inside node:test, Jest, Vitest, and Mocha.",
   "type": "module",
   "main": "src/index.js",
@@ -38,7 +38,6 @@
     "test": "npm run test:unit && node test/selftest.mjs",
     "test:unit": "node --test test/unit/*.test.mjs",
     "test:e2e": "node test/selftest.mjs",
-    "typecheck": "tsc -p tsconfig.check.json",
     "prepublishOnly": "npm test"
   },
   "engines": {

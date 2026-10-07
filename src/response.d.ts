@@ -34,6 +34,7 @@ export declare class GoResponse {
   // Core assertions (response.js)
   expectStatus(code: number): this;
   expectStatusIn(...codes: number[]): this;
+  expectStatusIn(codes: number[]): this;
   expectOk(): this;
   expectHeader(name: string, matcher?: Matcher): this;
   expectJson(path: string, expected?: unknown): this;

@@ -2,10 +2,7 @@
 // condition holds or a timeout elapses. Useful for APIs whose state converges
 // asynchronously (caches, queues, replicas). Zero dependencies.
 
-// Resolve after the given number of milliseconds using a timer.
-function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+import { sleep as delay } from "./utils/function.js";
 
 // Repeatedly invoke `fn` (awaiting any promise it returns) until it does not
 // throw, resolving with its return value. If it keeps throwing past `timeout`,

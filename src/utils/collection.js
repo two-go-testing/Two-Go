@@ -5,32 +5,13 @@
 // All type guards and deep equality come from the shared lang.js module.
 
 import { isArray, isFunction, isNil, isString, isEqual } from "./lang.js";
+import { get } from "./object.js";
 
-// Resolve a dot + bracket path against an object.
-// Supports "data[0].user.name" and "items.2.id" styles.
-// Returns undefined for any missing segment instead of throwing.
-function resolvePath(obj, path) {
-  if (isNil(path) || path === "") return obj;
-
-  const normalized = String(path)
-    .replace(/\[(\w+)\]/g, ".$1")
-    .replace(/^\./, "");
-
-  const segments = normalized.split(".");
-  let current = obj;
-
-  for (const segment of segments) {
-    if (isNil(current)) return undefined;
-    current = current[segment];
-  }
-
-  return current;
-}
 
 // Turn an iteratee (function or string path) into a value-producing function.
 function toIteratee(iteratee) {
   if (isFunction(iteratee)) return iteratee;
-  if (isString(iteratee)) return (value) => resolvePath(value, iteratee);
+  if (isString(iteratee)) return (value) => get(value, iteratee);
   // null/undefined iteratee acts as identity.
   return (value) => value;
 }

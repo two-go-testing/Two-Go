@@ -594,19 +594,20 @@ and Mocha.
 ```js
 import { test } from "node:test";
 import { go } from "two-go";
-import { scenario, given, when, then, and } from "two-go/bdd";
+import { scenario, Given, When, Then, And } from "two-go/bdd";
 
 const api = go("https://api.example.com");
 
 test("creating a user", scenario([
-  given("a valid payload", (w) => { w.payload = { name: "Ada", email: "ada@example.com" }; }),
-  when("the user is created", async (w) => { w.res = await api.post("/users").json(w.payload); }),
-  then("the response is 201", (w) => w.res.expectStatus(201)),
-  and("the body echoes the name", (w) => w.res.expectJson("name", "Ada")),
+  Given("a valid payload", (w) => { w.payload = { name: "Ada", email: "ada@example.com" }; }),
+  When("the user is created", async (w) => { w.res = await api.post("/users").json(w.payload); }),
+  Then("the response is 201", (w) => w.res.expectStatus(201)),
+  And("the body echoes the name", (w) => w.res.expectJson("name", "Ada")),
 ]));
 ```
 
-A `when` stashes the response on `world`, a `then` asserts on it. For a runnable
+A `When` stashes the response on `world`, a `Then` asserts on it. Step helpers
+are capitalized as in Gherkin. For a runnable
 end to end suite (a shop with login, cart, checkout, and more) see the
 `ecommerce-bdd` example in
 [two-go-examples](https://github.com/two-go-testing/two-go-examples).
@@ -1001,13 +1002,14 @@ Rough order, suggestions welcome in issues:
 ## Contributing
 
 Pull requests are welcome. Keep the zero dependency rule, add tests for new
-behavior, and run `npm test` and `npm run typecheck` before you open a PR.
+behavior, and run `npm test` before you open a PR. The unit suite also checks
+that every `.d.ts` file matches its module's runtime exports, so keep the
+declarations in sync when you add or rename an export.
 
 ```bash
 npm test          # unit tests plus the end to end self test
 npm run test:unit # just the unit tests
 npm run test:e2e  # just the self test
-npm run typecheck # type check the declarations against a usage sample
 ```
 
 ## License

@@ -12,6 +12,7 @@ export { GoClient, RequestBuilder } from "./client.js";
 export { GoResponse } from "./response.js";
 export { AssertionError, resolvePath, matches, deepEqual } from "./assertions.js";
 export { suite, run, reset } from "./runner.js";
+export { toJUnit, toJSON } from "./reporters.js";
 export { expect, Expectation } from "./expect.js";
 export { validate, isValid } from "./schema.js";
 export { chain } from "./utils/chain.js";
@@ -34,6 +35,14 @@ export {
 } from "./async.js";
 export { toCurl, enableLogging } from "./curl.js";
 export { inferSchema } from "./infer-schema.js";
+export { fromPostman, fromOpenapi } from "./importers/index.js";
+export {
+  createProvider,
+  aiGenerateTests,
+  explainFailure,
+  aiReview,
+  aiFuzz,
+} from "./ai/index.js";
 
 // Namespace of all lodash-inspired utilities, available as both `_` and `utils`.
 export declare const _: typeof import("./utils/index.js");

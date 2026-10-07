@@ -70,7 +70,8 @@ export declare class RequestBuilder implements PromiseLike<GoResponse> {
 
   // --- queued assertions (chainable) ---
   expectStatus(status: number): this;
-  expectStatusIn(statuses: number[]): this;
+  expectStatusIn(...codes: number[]): this;
+  expectStatusIn(codes: number[]): this;
   expectOk(): this;
   expectHeader(name: string, value?: unknown): this;
   expectJson(path: string, value?: unknown): this;
