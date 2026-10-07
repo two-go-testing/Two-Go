@@ -1001,13 +1001,14 @@ Rough order, suggestions welcome in issues:
 ## Contributing
 
 Pull requests are welcome. Keep the zero dependency rule, add tests for new
-behavior, and run `npm test` and `npm run typecheck` before you open a PR.
+behavior, and run `npm test` before you open a PR. The unit suite also checks
+that every `.d.ts` file matches its module's runtime exports, so keep the
+declarations in sync when you add or rename an export.
 
 ```bash
 npm test          # unit tests plus the end to end self test
 npm run test:unit # just the unit tests
 npm run test:e2e  # just the self test
-npm run typecheck # type check the declarations against a usage sample
 ```
 
 ## License

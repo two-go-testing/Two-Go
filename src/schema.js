@@ -11,6 +11,7 @@ import {
   isArray,
   isPlainObject,
 } from "./utils/lang.js";
+import { describeMatcher as describe } from "./internal.js";
 
 // Map of supported "type" keyword values to their predicate.
 const TYPE_CHECKS = {
@@ -186,13 +187,4 @@ function sameValue(a, b) {
     );
   }
   return false;
-}
-
-// Render a value for use in an error message.
-function describe(value) {
-  try {
-    return JSON.stringify(value);
-  } catch {
-    return String(value);
-  }
 }

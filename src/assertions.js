@@ -2,6 +2,7 @@
 // Deep equality is delegated to isEqual from the utility belt so there is a
 // single, correct source of truth (it handles Date, RegExp, Map, Set, NaN).
 import { isEqual } from "./utils/lang.js";
+import { get } from "./utils/object.js";
 
 // Error thrown by every failing assertion. Carries the expected/actual values
 // so test runners (and humans) can inspect the mismatch.
@@ -18,22 +19,7 @@ export class AssertionError extends Error {
 // Supports "data[0].user.name" and "items.2.id" styles.
 // Returns undefined for any missing segment instead of throwing.
 export function resolvePath(obj, path) {
-  if (path === undefined || path === null || path === "") return obj;
-
-  // Normalize bracket notation into dot notation: a[0].b -> a.0.b
-  const normalized = String(path)
-    .replace(/\[(\w+)\]/g, ".$1")
-    .replace(/^\./, "");
-
-  const segments = normalized.split(".");
-  let current = obj;
-
-  for (const segment of segments) {
-    if (current === undefined || current === null) return undefined;
-    current = current[segment];
-  }
-
-  return current;
+  return get(obj, path);
 }
 
 // Flexible value matcher used by expectJson / expectHeader / expectBody.

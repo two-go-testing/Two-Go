@@ -127,7 +127,7 @@ for (const name of FORWARD_ASSERTIONS) {
 }
 
 // A stateful client that shares a variable context across chained requests.
-class Session {
+export class Session {
   constructor(baseURLorOptions) {
     const options =
       typeof baseURLorOptions === "string"

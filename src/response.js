@@ -2,7 +2,8 @@
 // methods. Every assertion returns `this` for chaining and throws an
 // AssertionError on failure, so it works with any test runner.
 
-import { AssertionError, resolvePath, matches } from "./assertions.js";
+import { resolvePath, matches } from "./assertions.js";
+import { failResponse, describeMatcher as describe } from "./internal.js";
 
 export class GoResponse {
   constructor({ status, statusText, headers, body, text, time, url, method }) {
@@ -16,12 +17,9 @@ export class GoResponse {
     this.method = method;
   }
 
-  // Build the standard failure message prefix.
+  // Throw with the standard `METHOD URL -> description` prefix.
   #fail(description, info) {
-    throw new AssertionError(
-      `${this.method} ${this.url} -> ${description}`,
-      info
-    );
+    failResponse(this, description, info);
   }
 
   // Exact status match.
@@ -35,8 +33,9 @@ export class GoResponse {
     return this;
   }
 
-  // Status must be one of the given codes.
-  expectStatusIn(...codes) {
+  // Status must be one of the given codes, passed variadically or as one array.
+  expectStatusIn(...args) {
+    const codes = args.length === 1 && Array.isArray(args[0]) ? args[0] : args;
     if (!codes.includes(this.status)) {
       this.#fail(
         `expected status in [${codes.join(", ")}] but got ${this.status}`,
@@ -152,17 +151,5 @@ export class GoResponse {
   // Read a value from the parsed body using a dot + bracket path.
   get(path) {
     return resolvePath(this.body, path);
-  }
-}
-
-// Human readable description of a matcher/value for error messages.
-function describe(value) {
-  if (value instanceof RegExp) return value.toString();
-  if (typeof value === "function") return value.name ? `predicate ${value.name}` : "predicate";
-  if (typeof value === "string") return JSON.stringify(value);
-  try {
-    return JSON.stringify(value);
-  } catch {
-    return String(value);
   }
 }

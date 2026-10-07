@@ -1,30 +1,13 @@
 // Numeric helpers: clamping, ranges, rounding with precision, and array
 // aggregations (sum/mean/min/max with optional iteratees). Zero dependencies.
 
-// Resolve a value path against an object using dot + bracket notation.
-// Supports "a.b", "a[0].b" and "items.2.id"; returns undefined on a gap.
-function resolvePath(obj, path) {
-  if (path === undefined || path === null || path === "") return obj;
+import { get } from "./object.js";
 
-  const normalized = String(path)
-    .replace(/\[(\w+)\]/g, ".$1")
-    .replace(/^\./, "");
-
-  const segments = normalized.split(".");
-  let current = obj;
-
-  for (const segment of segments) {
-    if (current === undefined || current === null) return undefined;
-    current = current[segment];
-  }
-
-  return current;
-}
 
 // Turn a function-or-string into a function. Strings become path accessors.
 function toIteratee(iteratee) {
   if (typeof iteratee === "function") return iteratee;
-  if (typeof iteratee === "string") return (value) => resolvePath(value, iteratee);
+  if (typeof iteratee === "string") return (value) => get(value, iteratee);
   return (value) => value;
 }
 

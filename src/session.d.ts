@@ -14,7 +14,8 @@ export interface SessionRequest extends PromiseLike<GoResponse> {
 
   // Forwarded queued assertion methods (chainable).
   expectStatus(status: number): this;
-  expectStatusIn(statuses: number[]): this;
+  expectStatusIn(...codes: number[]): this;
+  expectStatusIn(codes: number[]): this;
   expectOk(): this;
   expectHeader(name: string, expected?: unknown): this;
   expectJson(path: string, expected?: unknown): this;

@@ -3,6 +3,33 @@
 All notable changes to this project are documented here. This project follows
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- **`toStrictEqual` no longer passes for different Dates, RegExps, Maps or Sets.**
+  These carry no own keys, so two different dates were reported strictly equal.
+  It now compares them by content, and also checks array length and sparseness.
+- **`expectStatusIn` accepts an array.** The chained (`RequestBuilder`) and
+  session typings declared `expectStatusIn(number[])`, but the runtime only
+  accepted variadic codes, so the typed form always failed. Both forms now work
+  everywhere, and the typings declare both.
+- **Declarations match the runtime.** `index.d.ts` now declares `toJUnit`,
+  `toJSON`, `fromPostman`, `fromOpenapi`, `createProvider`,
+  `aiGenerateTests`, `explainFailure`, `aiReview` and `aiFuzz`, which were
+  exported but undeclared. `Session`, which was declared as a class, is now
+  actually exported from `two-go/session`.
+
+### Changed
+
+- **No toolchain dependency at all.** The `typecheck` script (which needed an
+  undeclared TypeScript install) is replaced by a `node:test` suite that checks
+  every `.d.ts` against its module's runtime exports and class prototypes.
+- `expect(x).toBeEmpty()` now shares `isEmpty` from the utility belt, so a
+  function counts as empty (lodash semantics), matching `expectEmpty()`.
+- Internal cleanup: one implementation each for path resolution, matcher
+  formatting, response failure messages and `sleep`, instead of copies.
+
 ## [1.1.1]
 
 ### Fixed
