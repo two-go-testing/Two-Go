@@ -1,18 +1,21 @@
-// A tiny BDD layer, runner agnostic. given/when/then/and build step objects
+// A tiny BDD layer, runner agnostic. Given/When/Then/And build step objects
 // that share a `world`. scenario(steps) returns an async function you hand to
 // your test runner's test() (node:test, Jest, Vitest, Mocha). This module does
 // not import any runner, and two-go's throwing assertions decide pass or fail.
 
 const makeStep = (kind) => (text, run) => ({ kind, text, run });
 
+// Steps are capitalized as in Gherkin. A lowercase `then` export would make
+// the module namespace a thenable, so `await import("two-go/bdd")` would hang.
+
 /** A "Given" step: set up state on the world. */
-export const given = makeStep("Given");
+export const Given = makeStep("Given");
 /** A "When" step: perform the action, usually stashing a response on the world. */
-export const when = makeStep("When");
+export const When = makeStep("When");
 /** A "Then" step: assert on what the When produced. */
-export const then = makeStep("Then");
+export const Then = makeStep("Then");
 /** An "And" step: continue the previous Given/When/Then. */
-export const and = makeStep("And");
+export const And = makeStep("And");
 
 // Turn a list of steps into an async function. Steps run in order and share a
 // `world` object. options.world seeds the world; options.log(line) receives
@@ -31,7 +34,7 @@ export function scenario(steps, options = {}) {
 // Build a labelled list of scenarios from a feature definition, so you can loop
 // and register each one with your runner:
 //
-//   for (const s of feature("Login", { "valid creds": [given(...), ...] })) {
+//   for (const s of feature("Login", { "valid creds": [Given(...), ...] })) {
 //     test(s.name, s.run);
 //   }
 export function feature(name, scenarios, options = {}) {

@@ -4,10 +4,9 @@
 // export exists at runtime, and that every public prototype method of an
 // exported class (including plugin-installed ones) is declared on that class.
 
-import { test, after } from "node:test";
+import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync, existsSync, mkdtempSync, writeFileSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, dirname, relative, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -83,20 +82,6 @@ function declaredExports(dtsFile, seen = new Set()) {
   return result;
 }
 
-// Import a module's namespace without awaiting it directly: a namespace that
-// exports `then` (bdd.js) would otherwise be treated as a thenable by import()
-// and by async-function returns, so the namespace is returned boxed.
-const WRAPPER_DIR = mkdtempSync(join(tmpdir(), "two-go-types-"));
-after(() => rmSync(WRAPPER_DIR, { recursive: true, force: true }));
-let wrapperCount = 0;
-
-function loadNamespace(file) {
-  const url = JSON.stringify(pathToFileURL(file).href);
-  const wrapper = join(WRAPPER_DIR, `ns-${(wrapperCount += 1)}.mjs`);
-  writeFileSync(wrapper, `import * as ns from ${url};\nexport { ns };\n`);
-  return import(pathToFileURL(wrapper).href);
-}
-
 // Public prototype members of a class, including non-enumerable plugin methods.
 function prototypeMembers(cls) {
   return Object.getOwnPropertyNames(cls.prototype).filter(
@@ -132,7 +117,7 @@ for (const jsFile of jsFiles) {
   if (!existsSync(dts)) continue;
 
   test(`${rel(dts)} matches the runtime exports of ${rel(jsFile)}`, async () => {
-    const { ns: mod } = await loadNamespace(jsFile);
+    const mod = await import(pathToFileURL(jsFile).href);
     const declared = declaredExports(dts);
     const runtime = Object.keys(mod);
 

@@ -5,6 +5,13 @@ All notable changes to this project are documented here. This project follows
 
 ## [Unreleased]
 
+### Breaking
+
+- **BDD step helpers are capitalized: `Given`, `When`, `Then`, `And`.** The
+  lowercase `then` export made the `two-go/bdd` module namespace a thenable,
+  so `await import("two-go/bdd")` (the only way to load it from CommonJS on
+  Node 18/20) never resolved. Rename `given/when/then/and` imports and calls.
+
 ### Fixed
 
 - **`toStrictEqual` no longer passes for different Dates, RegExps, Maps or Sets.**
